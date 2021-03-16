@@ -23,9 +23,12 @@ public:
 	}
 
 	void run();
+
 	virtual void onUpdate(float deltaTime) {}
 	virtual void onEvent(SDL_Event& ev) {};
 	
+private:
+
 };
 
 } // namespace

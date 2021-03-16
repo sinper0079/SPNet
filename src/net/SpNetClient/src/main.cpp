@@ -52,23 +52,16 @@ public:
 
 } // namespace
 
-void testUDPClient() {
-	SITA_LOG("\n\n==== testUDPClient==== \n");
-	MySocket sock;
-	sock.createUDP();
-	MySocketAddr addr;
-	addr.setIPv4(127, 0, 0, 1);
-	addr.setPort(3000);
 
-	sock.sendto_c_str(addr, "1234ABCD");
 
-}
+
 
 int main()
 {
 	using namespace sita;
 	SITA_LOG("\n\n==== Client Start ==== \n");
-	testUDPClient();
+	//UIManager::DrawGUI();
+
 	MyApp app;
 	app.run();
 
