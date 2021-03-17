@@ -41,6 +41,8 @@ void UDPClient()
     sock.sendto_c_str(addr, "1234ABCD");
 }
 
+
+
 void UDPServer()
 {
     MySocket sock;
@@ -58,6 +60,7 @@ void UDPServer()
         size_t n = sock.availableBytesToRead();
         if (n == 0) {
             //printf("wait..\n");
+            break; 
             my_sleep(1);
             continue;
         }
@@ -85,9 +88,15 @@ public:
 
     void _update();
     void _render();
+    void TCPClient();
+    void TCPServer(MySocket listenSock, MySocket client);
  
-
+    bool isServer =false;
     bool _running = true;
+    MySocket listenSock;
+    MySocket client;
+
+    std::vector<char> buf;
     GameApp* _owner = nullptr;
 
     SDL_Window* window = nullptr;
@@ -105,10 +114,77 @@ GameAppImpl::~GameAppImpl() {
     SDL_Quit();
 }
 
+
+
+void GameAppImpl::TCPClient()
+{
+
+    SITA_LOG("\n\n==== testTCPClient==== \n");
+    MySocket sock;
+    sock.createTCP();
+    MySocketAddr addr;
+    addr.setIPv4(127, 0, 0, 1);
+    addr.setPort(3000);
+    sock.connect(addr);
+    sock.send_c_str( "1234ABCD");
+    sock.close();
+    my_sleep(1);
+    sock.createTCP();
+    addr.setIPv4(127, 0, 0, 1);
+    addr.setPort(3000);
+    sock.connect(addr);
+    sock.send_c_str("1234asdasdABCD");
+}
+
+void GameAppImpl::TCPServer(MySocket listenSock, MySocket client) {
+
+    listenSock.createTCP();
+
+    MySocketAddr addr;
+    addr.setIPv4(0, 0, 0, 0);
+    addr.setPort(3000);
+
+    listenSock.bind(addr);
+    listenSock.listen();
+
+
+    listenSock.accept(client);
+
+
+}
+
 void GameAppImpl::run() {
     while(_running) {
-        _update();
-        _render();
+        if (isServer) {
+
+            for (;;) {
+                size_t n = client.availableBytesToRead();
+                if (n == 0) {
+                    //printf("wait..\n");
+                    _update();
+                    _render();
+                  //  my_sleep(1);
+                    continue;
+                }
+
+                client.recv(buf, n);
+                buf.push_back(0);
+                printf("recv %d: %s\n", (int)n, buf.data());
+
+                for (auto& c : buf) {
+                    c = toupper(c);
+                }
+
+                client.send(buf);
+            }
+        }
+        else {
+        
+            _update();
+            _render();
+        
+        }
+
     }
 }
 
@@ -142,14 +218,23 @@ void GameAppImpl::_update() {
        if (ImGui::Button("Create Room (Host)")) {
 
            SITA_LOG("\n\n==== Host Server ==== \n");
-          UDPServer();
+           listenSock.createTCP();
+
+           MySocketAddr addr;
+           addr.setIPv4(0, 0, 0, 0);
+           addr.setPort(3000);
+           listenSock.setReuseAddr(true);
+           listenSock.bind(addr);
+           listenSock.listen();
+           listenSock.accept(client);
+           isServer = true;
 
        }
 
        if (ImGui::Button("Join Room (Client)")) {
 
            SITA_LOG("\n\n==== Join Room  ==== \n");
-          UDPClient();
+           TCPClient();
 
        }
        ImGui::End();

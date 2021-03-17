@@ -103,6 +103,16 @@ void MySocket::connectIPv4(const char* hostname, uint16_t port) {
 	connect(addr);
 }
 
+void MySocket::setReuseAddr(bool b) {
+	//_checkValid();
+	int a = b ? 1 : 0;
+
+#if !_WIN32
+	setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&a), static_cast<int>(sizeof(a)));
+#endif
+	setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&a), static_cast<int>(sizeof(a)));
+}
+
 bool MySocket::accept(MySocket & acceptedSocket) {
 	acceptedSocket.close();
 

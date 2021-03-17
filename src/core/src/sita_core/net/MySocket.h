@@ -15,6 +15,7 @@ public:
 
 	void print() const;
 
+
 	struct sockaddr _addr;
 };
 
@@ -43,7 +44,7 @@ public:
 	void connectIPv4(const char* hostname, uint16_t port);
 
 	bool accept(MySocket & acceptedSocket);
-
+	void setReuseAddr(bool b);
 	void sendto(const MySocketAddr& addr, const char* data, size_t dataSize);
 	void sendto_c_str(const MySocketAddr& addr, const char* data) { sendto(addr, data, strlen(data)); }
 
