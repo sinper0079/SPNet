@@ -127,13 +127,7 @@ void GameAppImpl::TCPClient()
     addr.setPort(3000);
     sock.connect(addr);
     sock.send_c_str( "1234ABCD");
-    sock.close();
-    my_sleep(1);
-    sock.createTCP();
-    addr.setIPv4(127, 0, 0, 1);
-    addr.setPort(3000);
-    sock.connect(addr);
-    sock.send_c_str("1234asdasdABCD");
+
 }
 
 void GameAppImpl::TCPServer(MySocket listenSock, MySocket client) {
