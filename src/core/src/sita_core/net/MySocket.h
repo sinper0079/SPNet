@@ -56,7 +56,7 @@ public:
 
 	void recv(std::vector<char> & buf, size_t bytesToRecv);
 	void recvfrom(MySocketAddr& addr, std::vector<char> & buf, size_t bytesToRecv);
-
+	bool isValid() const { return _sock != INVALID_SOCKET; }
 private:
 	SOCKET _sock = INVALID_SOCKET;
 };

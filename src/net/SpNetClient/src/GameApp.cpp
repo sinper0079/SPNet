@@ -151,33 +151,24 @@ void GameAppImpl::run() {
     while(_running) {
         if (isServer) {
 
-            for (;;) {
+            if (client.isValid()) {
+                printf(".");
                 size_t n = client.availableBytesToRead();
-                if (n == 0) {
-                    //printf("wait..\n");
-                    _update();
-                    _render();
-                  //  my_sleep(1);
-                    continue;
-                }
 
                 client.recv(buf, n);
                 buf.push_back(0);
                 printf("recv %d: %s\n", (int)n, buf.data());
 
-                for (auto& c : buf) {
-                    c = toupper(c);
-                }
+                /* for (auto& c : buf) {
+                     c = toupper(c);
+                 }*/
 
                 client.send(buf);
             }
+            
         }
-        else {
-        
-            _update();
-            _render();
-        
-        }
+        _update();
+        _render();
 
     }
 }
@@ -228,9 +219,21 @@ void GameAppImpl::_update() {
        if (ImGui::Button("Join Room (Client)")) {
 
            SITA_LOG("\n\n==== Join Room  ==== \n");
-           TCPClient();
+           client.createTCP();
+           MySocketAddr addr;
+           addr.setIPv4(127, 0, 0, 1);
+           addr.setPort(3000);
+           client.connect(addr);
 
        }
+       if (ImGui::Button("Send Button")) {
+           if (!isServer) {
+               if (client.isValid()) {
+                   client.send_c_str("1234ABCD");
+               }
+           }
+       }
+
        ImGui::End();
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         //if (show_demo_window)
