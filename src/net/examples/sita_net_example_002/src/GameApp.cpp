@@ -1,5 +1,3 @@
-
-#include <sita_core/net/MySocket.h>
 #include "GameApp.h"
 
 // About Desktop OpenGL function loaders:
@@ -28,57 +26,6 @@ using namespace gl;
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 
-void UDPClient()
-{
-
-    SITA_LOG("\n\n==== testUDPClient==== \n");
-    MySocket sock;
-    sock.createUDP();
-    MySocketAddr addr;
-    addr.setIPv4(127, 0, 0, 1);
-    addr.setPort(3000);
-
-    sock.sendto_c_str(addr, "1234ABCD");
-}
-
-struct Player {
-    
-    ImVec2 playerPos{ 400,300 };
-    ImVec2 dir{ 0,0 };
-    float speed = 200;
-};
-
-
-void UDPServer()
-{
-    MySocket sock;
-    sock.createUDP();
-
-    MySocketAddr addr;
-    addr.setIPv4(0, 0, 0, 0);
-    addr.setPort(3000);
-
-    sock.bind(addr);
-
-    std::vector<char> buf;
-
-    for (;;) {
-        size_t n = sock.availableBytesToRead();
-        if (n == 0) {
-            //printf("wait..\n");
-            break; 
-            my_sleep(1);
-            continue;
-        }
-
-        sock.recv(buf, n);
-        buf.push_back(0);
-        printf("recv %d: %s\n", (int)n, buf.data());
-    }
-
-
-}
-
 namespace sita {
 
 class GameAppImpl : public NonCopyable {
@@ -94,16 +41,8 @@ public:
 
     void _update();
     void _render();
-    void OnClientConnect();
-    void TCPClient();
-    void TCPServer(MySocket listenSock, MySocket client);
- 
-    bool isServer =false;
-    bool _running = true;
-    MySocket listenSock;
-    MySocket client;
 
-    std::vector<char> buf;
+    bool _running = true;
     GameApp* _owner = nullptr;
 
     SDL_Window* window = nullptr;
@@ -121,66 +60,13 @@ GameAppImpl::~GameAppImpl() {
     SDL_Quit();
 }
 
-void GameAppImpl::OnClientConnect()
-{
-
-}
-
-void GameAppImpl::TCPClient()
-{
-
-    SITA_LOG("\n\n==== testTCPClient==== \n");
-    MySocket sock;
-    sock.createTCP();
-    MySocketAddr addr;
-    addr.setIPv4(127, 0, 0, 1);
-    addr.setPort(3000);
-    sock.connect(addr);
-    sock.send_c_str( "1234ABCD");
-
-}
-
-void GameAppImpl::TCPServer(MySocket listenSock, MySocket client) {
-
-    listenSock.createTCP();
-
-    MySocketAddr addr;
-    addr.setIPv4(0, 0, 0, 0);
-    addr.setPort(3000);
-
-    listenSock.bind(addr);
-    listenSock.listen();
-
-
-    listenSock.accept(client);
-
-
-}
-
 void GameAppImpl::run() {
+    _owner->onInit();
     while(_running) {
-        if (isServer) {
-
-            if (client.isValid()) {
-                printf(".");
-                size_t n = client.availableBytesToRead();
-
-                client.recv(buf, n);
-                buf.push_back(0);
-                printf("recv %d: %s\n", (int)n, buf.data());
-
-                /* for (auto& c : buf) {
-                     c = toupper(c);
-                 }*/
-
-                client.send(buf);
-            }
-            
-        }
         _update();
         _render();
-
     }
+    _owner->onDeinit();
 }
 
 void GameAppImpl::_update() {
@@ -207,81 +93,6 @@ void GameAppImpl::_update() {
         ImGui::NewFrame();
 
         _owner->onUpdate(ImGui::GetIO().DeltaTime);
-      
-        
-        ImGui::Begin("Control Panel");
-       if (ImGui::Button("Create Room (Host)")) {
-
-           SITA_LOG("\n\n==== Host Server ==== \n");
-           listenSock.createTCP();
-
-           MySocketAddr addr;
-           addr.setIPv4(0, 0, 0, 0);
-           addr.setPort(3000);
-           listenSock.setReuseAddr(true);
-           listenSock.bind(addr);
-           listenSock.listen();
-           listenSock.accept(client);
-           isServer = true;
-
-       }
-
-       if (ImGui::Button("Join Room (Client)")) {
-
-           SITA_LOG("\n\n==== Join Room  ==== \n");
-           client.createTCP();
-           MySocketAddr addr;
-           addr.setIPv4(127, 0, 0, 1);
-           addr.setPort(3000);
-           client.connect(addr);
-
-       }
-       if (ImGui::Button("Send Button")) {
-           if (!isServer) {
-               if (client.isValid()) {
-                   client.send_c_str("1234ABCD");
-               }
-           }
-       }
-
-
-       ImGui::End();
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        //if (show_demo_window)
-        //    ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        //{
-        //    static float f = 0.0f;
-        //    static int counter = 0;
-
-        //    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-        //    ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        //    ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        //    ImGui::Checkbox("Another Window", &show_another_window);
-
-        //    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        //    ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        //    if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-        //        counter++;
-        //    ImGui::SameLine();
-        //    ImGui::Text("counter = %d", counter);
-
-        //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        //    ImGui::End();
-        //}
-
-        // 3. Show another simple window.
-        //if (show_another_window)
-        //{
-        //    ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        //    ImGui::Text("Hello from another window!");
-        //    if (ImGui::Button("Close Me"))
-        //        show_another_window = false;
-        //    ImGui::End();
-        //}
 }
 
 void GameAppImpl::_render() {
@@ -365,22 +176,6 @@ GameAppImpl::GameAppImpl(GameApp* owner)
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != NULL);
-
 }
 
 GameApp::~GameApp() {
@@ -391,7 +186,9 @@ void GameApp::run() {
     impl->run();
 }
 
+ImVec2 GameApp::screenSize() const {
+    auto& io = ImGui::GetIO();
+    return io.DisplaySize;
+}
 
 } // namespace
-
-

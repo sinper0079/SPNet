@@ -1,2 +1,2 @@
 
-cmake -B build/SpNet-makefile .
+cmake -B build/libsita-makefile .

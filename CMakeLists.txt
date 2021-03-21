@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-project(SpNet)
+project(libsita)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(EABase CONFIG REQUIRED)
@@ -53,6 +53,7 @@ endfunction()
 
 add_subdirectory(src/core)
 add_subdirectory(src/core/test)
+
 add_subdirectory(src/net/common)
 add_subdirectory(src/net/client)
 add_subdirectory(src/net/server/base)
@@ -61,8 +62,8 @@ add_subdirectory(src/net/server/gateway)
 add_subdirectory(src/net/server/login)
 add_subdirectory(src/net/server/zone)
 add_subdirectory(src/net/examples/sita_net_example_001)
-add_subdirectory(src/net/SpNetClient)
-add_subdirectory(src/net/SpNetServer)
+add_subdirectory(src/net/examples/sita_net_example_002)
+
 add_subdirectory(src/render)
 
 

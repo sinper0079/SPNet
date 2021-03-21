@@ -1,15 +1,6 @@
 #pragma once
 
-#include <sita_core.h>
-
-#define SDL_MAIN_HANDLED
-
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
-#include <stdio.h>
-#include <SDL.h>
-
+#include "pch.h"
 
 namespace sita {
 
@@ -24,11 +15,13 @@ public:
 
 	void run();
 
+	virtual void onInit() {}
+	virtual void onDeinit() {}
 	virtual void onUpdate(float deltaTime) {}
-	virtual void onEvent(SDL_Event& ev) {};
-	
-private:
+	virtual void onEvent(SDL_Event& ev) {}
 
+	ImVec2 screenSize() const;
 };
+
 
 } // namespace
