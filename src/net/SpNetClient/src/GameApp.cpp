@@ -41,6 +41,12 @@ void UDPClient()
     sock.sendto_c_str(addr, "1234ABCD");
 }
 
+struct Player {
+    
+    ImVec2 playerPos{ 400,300 };
+    ImVec2 dir{ 0,0 };
+    float speed = 200;
+};
 
 
 void UDPServer()
@@ -88,6 +94,7 @@ public:
 
     void _update();
     void _render();
+    void OnClientConnect();
     void TCPClient();
     void TCPServer(MySocket listenSock, MySocket client);
  
@@ -114,7 +121,10 @@ GameAppImpl::~GameAppImpl() {
     SDL_Quit();
 }
 
+void GameAppImpl::OnClientConnect()
+{
 
+}
 
 void GameAppImpl::TCPClient()
 {
@@ -233,6 +243,7 @@ void GameAppImpl::_update() {
                }
            }
        }
+
 
        ImGui::End();
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
