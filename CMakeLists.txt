@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-project(libsita)
+project(SPNet)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(EABase CONFIG REQUIRED)
@@ -63,7 +63,8 @@ add_subdirectory(src/net/server/login)
 add_subdirectory(src/net/server/zone)
 add_subdirectory(src/net/examples/sita_net_example_001)
 add_subdirectory(src/net/examples/sita_net_example_002)
-
+add_subdirectory(src/net/SPClient)
+add_subdirectory(src/net/SPServer)
 add_subdirectory(src/render)
 
 
