@@ -5,7 +5,9 @@
 namespace sita {
 
 class Player {
+	
 public:
+	Player() {};
 	bool isActive() const { return _active; }
 	void setActive(bool b) { _active = b; }
 

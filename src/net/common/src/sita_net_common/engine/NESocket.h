@@ -10,7 +10,7 @@ class NESocket {
 public:
 	void setUserData(void* p) { _userData = p; }
 	void* userData() { return _userData; }
-	
+	Socket& getSocket() { return _sock;}
 	template<class T>
 	void sendPacket(T& pkt) {
 		
