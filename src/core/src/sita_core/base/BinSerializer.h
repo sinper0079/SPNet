@@ -57,8 +57,8 @@ public:
 	SITA_INLINE void io_vary(u64& value)	{ _io_vary_unsigned(value); }
 
 	SITA_INLINE u8* _advance(size_t n);
-
-private:
+	Vector<u8>* buf() { return _buf; }
+	private:
 	template<class T> SITA_INLINE void _io_fixed(T& value);
 	template<class T> SITA_INLINE void _io_vary_unsigned(T& value);
 	template<class U, class T> SITA_INLINE void _io_vary_signed(T& value);

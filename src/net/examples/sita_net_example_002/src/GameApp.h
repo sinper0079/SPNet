@@ -15,8 +15,8 @@ public:
 
 	void run();
 
-	virtual void onInit() {}
-	virtual void onDeinit() {}
+	virtual void onInit();
+	virtual void onDeinit();
 	virtual void onUpdate(float deltaTime) {}
 	virtual void onEvent(SDL_Event& ev) {}
 

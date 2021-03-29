@@ -18,7 +18,7 @@ public:
 
 	bool isConnected = false;
 	bool isHost() const { return _listenSock.isValid(); }
-
+	
 	virtual void onInit() override {
 		player.setActive(true);
 		player.setPos({
@@ -72,6 +72,28 @@ public:
 					SITA_LOG("connected");
 					isConnected = true;
 				} catch (Error) {
+					SITA_LOG("error connect");
+				}
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("Join Dedicated Server")) {
+				try {
+					_sock.createTCP();
+					_sock.setNonBlocking(true);
+					if (_sock.connect(hostname, static_cast<uint16_t>(port))) {
+						SITA_LOG("connected");
+						isConnected = true;
+						return;
+					}
+				
+
+					auto col = player.color().Value;
+					_sock.send(fmt::format("color {} {} {}\n", col.x, col.y, col.z));
+					SITA_LOG("connected");
+					isConnected = true;
+				}
+				catch (Error) {
 					SITA_LOG("error connect");
 				}
 			}

@@ -1,7 +1,8 @@
+#include "..\..\examples\sita_net_example_002\src\GameApp.h"
 #pragma once
 
 #include "pch.h"
-
+#include "NetworkComponent.h"
 namespace sita {
 
 class GameApp {
@@ -15,12 +16,19 @@ public:
 
 	void run();
 
-	virtual void onInit() {}
-	virtual void onDeinit() {}
+
 	virtual void onUpdate(float deltaTime) {}
 	virtual void onEvent(SDL_Event& ev) {}
-
+	std::unique_ptr<NetworkComponent>NetComponent = nullptr;
 	ImVec2 screenSize() const;
+
+	virtual void onInit() {
+		NetComponent = std::make_unique<NetworkComponent>();
+		NetComponent->connect(NetComponent->hostname, NetComponent->port);
+	}
+	virtual void onDeinit() {
+		NetComponent.reset();
+	}
 };
 
 

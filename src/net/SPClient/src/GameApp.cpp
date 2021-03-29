@@ -183,6 +183,7 @@ GameApp::~GameApp() {
 
 void GameApp::run() {
     auto impl = std::make_unique<GameAppImpl>(this);
+
     impl->run();
 }
 
