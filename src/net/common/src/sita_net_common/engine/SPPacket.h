@@ -1,4 +1,4 @@
-
+#pragma once
 #include "NEPacket.h"
 
 namespace sita {
@@ -33,7 +33,7 @@ namespace sita {
 			{
 				// update the header size in buf
 				auto* p = reinterpret_cast<PacketSize*>(se.buf()->data());
-				*p = my_hton(packetSize);
+				*p = LittleEndian::FromHost::get(packetSize);
 			}
 		}
 

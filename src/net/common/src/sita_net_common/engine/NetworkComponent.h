@@ -1,6 +1,5 @@
 #pragma once
-
-#include"pch.h"
+#include "sita_net_common.h"
 
 namespace sita {
 	class NetworkComponent : public NonCopyable 
@@ -40,8 +39,10 @@ namespace sita {
 
 		MyPollFD _pollfd;
 
-		Vector<char> _tmp;
-		
+		Vector<u8> _tmp;
+		Vector<char> _tmpChar;
+	
+
 		Vector<u8>_recvBuf;
 
 		Vector<char> _recvBufChar; // cant overload variable?

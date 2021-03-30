@@ -7,7 +7,4 @@ int main()
 	SITA_LOG("Server Start");
 	SPNetServer	SpNetServer;
 	SpNetServer.RunServer();
-
-
-
 }

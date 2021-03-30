@@ -2,7 +2,6 @@
 #pragma once
 
 #include "pch.h"
-#include "NetworkComponent.h"
 namespace sita {
 
 class GameApp {
@@ -19,7 +18,7 @@ public:
 
 	virtual void onUpdate(float deltaTime) {}
 	virtual void onEvent(SDL_Event& ev) {}
-	std::unique_ptr<NetworkComponent>NetComponent = nullptr;
+	std::unique_ptr<NetworkComponent>NetComponent;
 	ImVec2 screenSize() const;
 
 	virtual void onInit() {

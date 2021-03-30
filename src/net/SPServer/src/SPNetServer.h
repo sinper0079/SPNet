@@ -1,7 +1,6 @@
 #pragma once
 #include "pch.h"
 #include "..\..\..\src\net\SPClient\src\Player.h" //if static lib is fine, not sure how to properly include properly from are executable file. 
-#include "..\..\..\..\..\src\net\SPClient\src\NetworkComponent.h"
 class SPNetServer : NetEngine {
 
 	class ClientConnect : public NetworkComponent {
