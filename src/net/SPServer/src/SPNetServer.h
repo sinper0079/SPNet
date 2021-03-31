@@ -38,10 +38,14 @@ class SPNetServer : NetEngine {
 	void RunServer();
 	virtual void onInitServer();
 	virtual void onDeinitServer();
-	void _update();
+	virtual void update() override;
+
+	void UpdateListenPoll();
+
 	void StartListen(const SockAddr& addr);
 	void StopListen();
 
+	virtual void onRecv(std::unique_ptr<NESocket>& s) ;
 
 	void sendToAll(SPPacket& pkt) {
 		for (auto& c : PlayerConnects) {

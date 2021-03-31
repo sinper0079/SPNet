@@ -1,7 +1,9 @@
 #include "NetEngine.h"
 
 namespace sita {
-
+void NetEngine::update() {
+	
+}
 void NetEngine::onRecv(NESocket* s) {
 	if (!s) return;
 

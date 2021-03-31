@@ -139,7 +139,7 @@ void  sita::NetworkComponent::close()
 {
 	_status = Status::Closed;
 	_sock.close();
-	printf("closed\n");
+	SITA_LOG("closed\n");
 }
 
 bool sita::NetworkComponent::isValid()

@@ -44,11 +44,13 @@ namespace sita {
 
 		Type type() const { return onType(); }
 
-	private:
+
+
+	protected:
 		virtual Type onType() const = 0;
 		virtual void onToBuffer(BinSerializer& se) = 0;
 		virtual void onFromBuffer(BinDeserializer& se) = 0;
-
+		
 		void io(BinSerializer& se) {
 			PacketSize size = 0;
 			se.io_fixed(size);
@@ -66,43 +68,45 @@ namespace sita {
 			if (t != type())
 				throw SITA_ERROR("Packet type mismatch");
 		}
+
+
 	};
 
 
-	//class SPPacket_Hello : public SPPacket {
-	//	using Base = SPPacket;
-	//public:
-	//	uint32_t version = 100;
+	class SPPacket_Hello : public SPPacket {
+		using Base = SPPacket;
+	public:
+		uint32_t version = 100;
 
-	//protected:
-	//	virtual Type onType() const { return Type::Hello; }
-	//	virtual void onToBuffer(BinSerializer& se) override { io(se); }
-	//	virtual void onFromBuffer(BinDeserializer& se) override { io(se); }
+	protected:
+		virtual Type onType() const { return Type::Hello; }
+		virtual void onToBuffer(BinSerializer& se) override { io(se); }
+		virtual void onFromBuffer(BinDeserializer& se) override { io(se); }
 
-	//	template<typename SE>
-	//	void io(SE& se) {
-	//		Base::io(se);
-	//		se.io(version);
-	//	}
-	//};
+		template<typename SE>
+		void io(SE& se) {
+			Base::io(se);
+			se.io(version);
+		}
+	};
 
-	//class SPPacket_Chat : public SPPacket {
-	//	using Base = SPPacket;
-	//public:
-	//	std::string msg;
-	//	std::vector< std::string > toUsers;
+	class SPPacket_Chat : public SPPacket {
+		using Base = SPPacket;
+	public:
+		std::string msg;
+		std::vector< std::string > toUsers;
 
-	//protected:
-	//	virtual Type onType() const { return Type::Chat; }
-	//	virtual void onToBuffer(BinSerializer& se) override { io(se); }
-	//	virtual void onFromBuffer(BinDeserializer& se) override { io(se); }
+	protected:
+		virtual Type onType() const { return Type::Chat; }
+		virtual void onToBuffer(BinSerializer& se) override { io(se); }
+		virtual void onFromBuffer(BinDeserializer& se) override { io(se); }
 
-	//	template<typename SE>
-	//	void io(SE& se) {
-	//		Base::io(se);
-	//		se.io(msg);
-	//		se.io(toUsers);
-	//	}
-	//};
+		template<typename SE>
+		void io(SE& se) {
+			Base::io(se);
+			se.io(msg);
+			se.io(toUsers);
+		}
+	};
 
 } // namespace

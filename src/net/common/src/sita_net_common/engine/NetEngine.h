@@ -10,7 +10,7 @@ public:
 	void listen(const SockAddr& addr);
 	void stopListen();
 
-	void update();
+	virtual void update();
 
 	NESocket* connect(const SockAddr& addr);
 

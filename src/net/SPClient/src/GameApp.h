@@ -1,4 +1,4 @@
-#include "..\..\examples\sita_net_example_002\src\GameApp.h"
+
 #pragma once
 
 #include "pch.h"
@@ -22,11 +22,11 @@ public:
 	ImVec2 screenSize() const;
 
 	virtual void onInit() {
-		NetComponent = std::make_unique<NetworkComponent>();
-		NetComponent->connect(NetComponent->hostname, NetComponent->port);
+
+
 	}
 	virtual void onDeinit() {
-		NetComponent.reset();
+	
 	}
 };
 

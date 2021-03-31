@@ -20,6 +20,10 @@ public:
 	bool isHost() const { return _listenSock.isValid(); }
 	
 	virtual void onInit() override {
+		SITA_LOG("onInit");
+		NetComponent = std::make_unique<NetworkComponent>();
+
+
 		player.setActive(true);
 		player.setPos({
 			static_cast<float>(rand() % 1000 + 100),
@@ -78,20 +82,10 @@ public:
 
 			ImGui::SameLine();
 			if (ImGui::Button("Join Dedicated Server")) {
-				try {
-					_sock.createTCP();
-					_sock.setNonBlocking(true);
-					if (_sock.connect(hostname, static_cast<uint16_t>(port))) {
-						SITA_LOG("connected");
-						isConnected = true;
-						return;
-					}
-				
 
-					auto col = player.color().Value;
-					_sock.send(fmt::format("color {} {} {}\n", col.x, col.y, col.z));
-					SITA_LOG("connected");
-					isConnected = true;
+				
+				try {
+					NetComponent->connect(NetComponent->hostname, NetComponent->port);
 				}
 				catch (Error) {
 					SITA_LOG("error connect");
@@ -153,6 +147,12 @@ public:
 	}
 
 	void updateNetwork() {
+		
+		
+
+
+
+
 		if (!_sock.isValid()) {
 			anotherPlayer.setActive(false);
 			return;
