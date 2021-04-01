@@ -1,11 +1,10 @@
 #pragma once
-#include "pch.h"
 #include "..\..\..\src\net\SPClient\src\Player.h" //if static lib is fine, not sure how to properly include properly from are executable file. 
 class SPNetServer : NetEngine {
 
 	class ClientConnect : public NetworkComponent {
 	public:
-		virtual void onRecvPacket(SPPacketType packetType, const std::vector<char>& buf) override {
+		virtual void onRecvPacket(SPPacketType packetType, const std::vector<u8>& buf) override {
 			switch (packetType) {
 			//case SPPacketType::Hello: {
 			//	SPPacket_Hello pkt;
@@ -33,8 +32,28 @@ class SPNetServer : NetEngine {
 		SPNetServer* _server = nullptr;
 	};
 
-	public:
 
+#define  RECV_PACKET_CASE(T) \
+		case Cmd##T: { \
+			SPPacket_##T packet; \
+			BinDeserializer de(data, hdr.len); \
+			de.io(packet); \
+		}break; \
+
+
+
+#define 	CmdHello 0
+#define		CmdMsg 1
+
+	public:
+		 void onRecvPacket(std::unique_ptr<NESocket>& s, const NEPacketHeader& hdr, const u8* data) {
+			switch (hdr.cmd) {
+				RECV_PACKET_CASE(Hello)
+
+
+
+			}
+		}
 	void RunServer();
 	virtual void onInitServer();
 	virtual void onDeinitServer();

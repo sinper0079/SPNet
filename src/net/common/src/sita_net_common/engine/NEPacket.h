@@ -25,7 +25,6 @@ public:
 
 	void writeBuffer(const Vector<char>& buf);
 	void readBuffer (Vector<char>& buf);
-
 private:
 	Header _header;
 };

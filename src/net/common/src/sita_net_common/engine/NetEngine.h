@@ -18,7 +18,7 @@ public:
 	virtual void onConnect		(NESocket* s) {}
 	virtual void onDisconnect	(NESocket* s) {}
 
-	//virtual void onRecvPacket	(NESocket* s, const NEPacketHeader& hdr, const u8* data);
+	virtual void onRecvPacket(NESocket* s, const NEPacketHeader& hdr, const u8* data) {};
 	virtual void onRecv			(NESocket* s);
 
 	void send(NESocket* s, const u8* data, size_t dataSize);

@@ -77,8 +77,10 @@ namespace sita {
 		using Base = SPPacket;
 	public:
 		uint32_t version = 100;
+		int i; 
+		String msg;
 
-	protected:
+//	protected:
 		virtual Type onType() const { return Type::Hello; }
 		virtual void onToBuffer(BinSerializer& se) override { io(se); }
 		virtual void onFromBuffer(BinDeserializer& se) override { io(se); }
@@ -90,7 +92,7 @@ namespace sita {
 		}
 	};
 
-	class SPPacket_Chat : public SPPacket {
+	/*class SPPacket_Chat : public SPPacket {
 		using Base = SPPacket;
 	public:
 		std::string msg;
@@ -107,6 +109,6 @@ namespace sita {
 			se.io(msg);
 			se.io(toUsers);
 		}
-	};
+	};*/
 
 } // namespace

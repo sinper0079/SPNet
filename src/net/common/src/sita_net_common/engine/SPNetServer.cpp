@@ -1,4 +1,4 @@
-#include "SPNetServer.h"
+#include "sita_net_common.h"
 #include <memory> 
 #include <utility>
 bool g_quit = true;
@@ -12,7 +12,7 @@ void SPNetServer::RunServer()
 	onDeinitServer();
 }
 
-void SPNetServer::UpdateListenPoll() {
+void SPNetServer::UpdateListenPoll() { 
 	if (!g_quit) {
 		auto n = PlayerConnects.size();
 		_pollfds.resize(n + 1);
@@ -127,7 +127,7 @@ void SPNetServer::onRecv(std::unique_ptr<NESocket>& s)
 		{
 			BinDeserializer se(_recvPacketBuf);
 			se.io(hdr);
-			//onRecvPacket(s, hdr, _recvPacketBuf.data()); //which socket 
+			onRecvPacket(s, hdr, _recvPacketBuf.data()); //which socket 
 		}
 	}
 
@@ -145,13 +145,15 @@ void SPNetServer::onDeinitServer()
 void SPNetServer::update()
 {
 
-	__super::update();
-	UpdateListenPoll();
-	for (int i; i< _sockList.size();i++) {
+
+	
+	for (int i=0; i< _sockList.size();i++) {
 		// how to know sock have something to read
 		onRecv(_sockList[i]); // non copyable only can pass ref?
 	}
+	UpdateListenPoll();
 
+	__super::update();
 }
 
 void SPNetServer::onInitServer()

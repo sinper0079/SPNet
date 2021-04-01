@@ -43,7 +43,7 @@ void NetEngine::onRecv(NESocket* s) {
 		{
 			BinDeserializer se(_recvPacketBuf);
 			se.io(hdr);
-			//onRecvPacket(s, hdr, _recvPacketBuf.data()); //which socket 
+			onRecvPacket(s, hdr, _recvPacketBuf.data()); //which socket 
 		}
 	}
 
