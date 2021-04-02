@@ -92,6 +92,8 @@ namespace sita {
 		}
 	};
 
+
+
 	/*class SPPacket_Chat : public SPPacket {
 		using Base = SPPacket;
 	public:

@@ -17,6 +17,8 @@ public:
 		BinSerializer se()
 	}
 
+	void close();
+
 friend class NetEngine;
 protected:
 	Socket _sock;

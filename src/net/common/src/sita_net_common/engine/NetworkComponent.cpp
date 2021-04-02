@@ -30,11 +30,8 @@ void  sita::NetworkComponent::sendPacket(SPPacket& pkt)
 {
 	auto type = pkt.type();
 	pkt.toBuffer(_tmp);
-
 	//printf("send packet %d\n", enum_int_ref(type));
-
-
-		SITA_LOG("send packet {}", enum_int_ref(type));
+	SITA_LOG("send packet {}", enum_int_ref(type));
 	//append to sendBuf
 	_sendBuf.insert(_sendBuf.end(), _tmp.begin(), _tmp.end());
 }

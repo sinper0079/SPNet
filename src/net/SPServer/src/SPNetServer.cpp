@@ -1,6 +1,7 @@
-#include "sita_net_common.h"
+#include "SPNetServer.h"
 #include <memory> 
 #include <utility>
+
 bool g_quit = true;
 void SPNetServer::RunServer()
 {
@@ -51,7 +52,7 @@ void SPNetServer::UpdateListenPoll() {
 		if (_pollfds[n].canRead()) {
 			PlayerConnects.emplace_back(new ClientConnect);
 			auto& newClient = PlayerConnects.back();
-			newClient->_server = this;
+			newClient->_server = std::make_unique<SPNetServer>(this);
 			newClient->acceptFromListenSock(_listenSock);
 			SITA_LOG("Accepeted new Client");
 		}
@@ -65,8 +66,11 @@ void SPNetServer::StartListen(const SockAddr& addr)
 	_listenSock.bind(addr);
 	_listenSock.listen();	
 	_listenSock.accept(_sock);
-	auto NewPlayer = std::make_unique <Player>();	// use reset() when end game or disconnt?
-	 PlayerList.emplace_back(std::move(NewPlayer)); //move into vector, no copy , original ptr will be empty 
+	PlayerList.emplace_back(new Player); //move into vector, no copy , original ptr will be empty 
+
+
+	//auto NewPlayer = std::make_unique <Player>();	// use reset() when end game or disconnt?
+	// PlayerList.emplace_back(std::move(NewPlayer)); //move into vector, no copy , original ptr will be empty 
 
 	 //if (PlayerList[PlayerList.size()- 1]) {
 		// auto col = PlayerList[PlayerList.size() - 1]->color().Value;
@@ -86,53 +90,7 @@ void SPNetServer::StopListen()
 
 
 }
-void SPNetServer::onRecv(std::unique_ptr<NESocket>& s)
-{
 
-	if (!s) return;
-
-	NEPacketHeader hdr;
-
-	const size_t _maxPacketPerFrame = 100;
-
-	_recvPacketBuf.clear();
-	_recvPacketBuf.resize(_maxPacketSize);
-
-	for (size_t i = 0; i < _maxPacketPerFrame; i++) {
-		auto bytesToRead = s->getSocket().availableBytesToRead();
-		if (bytesToRead < sizeof(hdr.len)) {
-			break;
-		}
-
-		int ret = s->getSocket().recv(_recvPacketBuf, sizeof(hdr.len), MSG_PEEK);//buffer not clear == size hdr
-		if (ret <= 0) {
-			// error or disconnected
-		}
-		if (ret < sizeof(hdr.len)) {
-			// error
-		}
-		{
-			BinDeserializer se(_recvPacketBuf);
-			se.io_fixed(hdr.len);
-		}
-
-		if (bytesToRead < hdr.len) //socket rec complete?
-			break;
-
-		ret = s->getSocket().recv(_recvPacketBuf, hdr.len, 0); //socket buf read
-		if (ret <= 0) {
-			// error or disconnected
-		}
-
-		{
-			BinDeserializer se(_recvPacketBuf);
-			se.io(hdr);
-			onRecvPacket(s, hdr, _recvPacketBuf.data()); //which socket 
-		}
-	}
-
-
-}
 void SPNetServer::onDeinitServer()
 {
 	SITA_LOG("onDeinitServer");
@@ -153,7 +111,6 @@ void SPNetServer::update()
 	}
 	UpdateListenPoll();
 
-	__super::update();
 }
 
 void SPNetServer::onInitServer()
